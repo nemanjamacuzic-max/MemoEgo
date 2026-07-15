@@ -1,0 +1,478 @@
+/* =====================================================
+   MemoEgo 2.5
+   style.css
+   Premium pastel tema
+===================================================== */
+
+
+*{
+box-sizing:border-box;
+}
+
+
+body{
+
+margin:0;
+padding:0;
+
+font-family:Arial, sans-serif;
+
+background:#F7F1E3;
+
+color:#2F3A2F;
+
+}
+
+
+/* =========================
+   HEADER
+========================= */
+
+
+header{
+
+background:#5B8C5A;
+
+color:white;
+
+text-align:center;
+
+padding:25px 15px;
+
+}
+
+
+header h1{
+
+margin:0;
+
+font-size:30px;
+
+}
+
+
+header p{
+
+margin-top:8px;
+
+}
+
+
+/* =========================
+   KARTICE
+========================= */
+
+
+.card{
+
+background:#E8F3E8;
+
+margin:15px;
+
+padding:20px;
+
+border-radius:18px;
+
+box-shadow:
+
+0 4px 12px rgba(0,0,0,0.08);
+
+}
+
+
+.card h2{
+
+margin-top:0;
+
+color:#5B8C5A;
+
+}
+
+
+/* =========================
+   INPUTI
+========================= */
+
+
+input,
+textarea,
+select{
+
+width:100%;
+
+padding:13px;
+
+margin:8px 0;
+
+border-radius:12px;
+
+border:1px solid #C8A96A;
+
+font-size:16px;
+
+background:white;
+
+color:#2F3A2F;
+
+}
+
+
+textarea{
+
+min-height:90px;
+
+resize:none;
+
+}
+
+
+/* =========================
+   DUGMAD
+========================= */
+
+
+button{
+
+width:100%;
+
+padding:14px;
+
+margin-top:10px;
+
+border:none;
+
+border-radius:12px;
+
+background:#5B8C5A;
+
+color:white;
+
+font-size:16px;
+
+font-weight:bold;
+
+}
+
+
+/* =========================
+   PODSETNICI
+========================= */
+
+
+.reminder-card{
+
+background:white;
+
+border-left:5px solid #5B8C5A;
+
+padding:15px;
+
+margin-bottom:12px;
+
+border-radius:14px;
+
+}
+
+
+.reminder-card h3{
+
+margin-top:0;
+
+}
+
+
+.reminder-card p{
+
+margin:8px 0;
+
+}
+
+
+.edit-btn{
+
+background:#C8A96A;
+
+}
+
+
+.complete-btn{
+
+background:#6FAF6A;
+
+}
+
+
+.delete-btn{
+
+background:#C96B6B;
+
+}
+
+
+.empty{
+
+text-align:center;
+
+color:#6B7280;
+
+padding:15px;
+
+}
+
+
+/* =========================
+   STATISTIKA
+========================= */
+
+
+.stats-box{
+
+display:flex;
+
+gap:10px;
+
+flex-wrap:wrap;
+
+}
+
+
+.stats-box div{
+
+flex:1;
+
+min-width:90px;
+
+background:#E8F3E8;
+
+padding:15px;
+
+border-radius:14px;
+
+text-align:center;
+
+font-weight:bold;
+
+}
+
+
+.stats-box span{
+
+font-size:24px;
+
+color:#5B8C5A;
+
+}
+
+
+/* =========================
+   OSOBE
+========================= */
+
+
+.person-card{
+
+background:#F7F1E3;
+
+border-left:5px solid #C8A96A;
+
+padding:15px;
+
+margin-bottom:12px;
+
+border-radius:14px;
+
+}
+
+
+.person-card h3{
+
+margin-top:0;
+
+color:#8A6A35;
+
+}
+
+
+.delete-person{
+
+background:#C96B6B;
+
+}
+
+
+/* =========================
+   VAŽNI DATUMI
+========================= */
+
+
+#importantDates p{
+
+background:#E8F3E8;
+
+border-left:5px solid #5B8C5A;
+
+padding:12px;
+
+border-radius:12px;
+
+margin:10px 0;
+
+}
+
+
+/* =========================
+   EDIT MODAL
+========================= */
+
+
+.modal{
+
+display:none;
+
+position:fixed;
+
+top:0;
+
+left:0;
+
+width:100%;
+
+height:100%;
+
+background:rgba(47,58,47,0.5);
+
+z-index:1000;
+
+padding:20px;
+
+}
+
+
+.modal-content{
+
+background:#F7F1E3;
+
+max-width:450px;
+
+margin:40px auto;
+
+padding:20px;
+
+border-radius:18px;
+
+}
+
+
+.modal-content h2{
+
+color:#5B8C5A;
+
+text-align:center;
+
+}
+
+
+/* =========================
+   FOOTER
+========================= */
+
+
+footer{
+
+text-align:center;
+
+padding:20px;
+
+color:#6B7280;
+
+font-size:14px;
+
+}
+
+
+/* =========================
+   MOBILNI PRIKAZ
+========================= */
+
+
+@media(max-width:600px){
+
+
+header h1{
+
+font-size:26px;
+
+}
+
+
+.card{
+
+margin:10px;
+
+padding:15px;
+
+}
+
+
+.stats-box{
+
+flex-direction:column;
+
+}
+
+
+button{
+
+font-size:15px;
+
+}
+
+
+input,
+textarea,
+select{
+
+font-size:16px;
+
+}
+
+}
+
+
+/* =========================
+   ANIMACIJA
+========================= */
+
+
+.reminder-card,
+.person-card{
+
+animation:
+
+showCard .25s ease;
+
+}
+
+
+@keyframes showCard{
+
+
+from{
+
+opacity:0;
+
+transform:translateY(10px);
+
+}
+
+
+to{
+
+opacity:1;
+
+transform:translateY(0);
+
+}
+
+
+}

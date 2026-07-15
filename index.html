@@ -1,0 +1,1083 @@
+<!DOCTYPE html>
+<html lang="sr">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>MemoEgo 2.6</title>
+
+<meta name="theme-color" content="#2563eb">
+
+<link rel="stylesheet" href="style.css">
+
+<link rel="manifest" href="./manifest.json">
+<link rel="icon" type="image/png" href="icons/icon-192.png">
+
+</head>
+
+
+<body>
+
+
+<header>
+
+<h1>🧠 MemoEgo</h1>
+
+<p>
+Lični digitalni asistent
+</p>
+
+</header>
+
+
+
+
+
+<section class="card" id="myDay">
+
+
+<h2 id="greeting">
+Dobro došli 👋
+</h2>
+
+
+<p id="currentDate"></p>
+
+
+<p id="assistantMessage">
+Pripremam vaš dan...
+</p>
+
+
+
+<div class="stats-box">
+
+
+<div>
+
+📌 Danas
+
+<br>
+
+<span id="todayCount">
+0
+</span>
+
+</div>
+
+
+
+<div>
+
+⏳ Aktivne
+
+<br>
+
+<span id="activeCount">
+0
+</span>
+
+</div>
+
+
+
+<div>
+
+✅ Završene
+
+<br>
+
+<span id="completedCount">
+0
+</span>
+
+</div>
+
+
+</div>
+
+
+
+<div id="todayPreview">
+
+</div>
+
+
+</section>
+
+
+
+
+
+
+
+<section class="card">
+
+
+<h2>
+➕ Novi podsetnik
+</h2>
+
+
+
+
+<input
+
+id="title"
+
+placeholder="Naslov podsetnika">
+
+
+
+
+
+<textarea
+
+id="description"
+
+placeholder="Opis podsetnika">
+
+</textarea>
+
+
+
+
+
+<input
+
+id="date"
+
+type="date">
+
+
+
+
+
+<input
+
+id="time"
+
+type="time">
+
+
+
+
+
+<select id="category">
+
+
+<option value="Posao">
+Posao
+</option>
+
+
+<option value="Privatno">
+Privatno
+</option>
+
+
+<option value="Zdravlje">
+Zdravlje
+</option>
+
+
+<option value="Obaveze">
+Obaveze
+</option>
+
+
+<option value="Ostalo">
+Ostalo
+</option>
+
+
+</select>
+
+
+
+
+
+<select id="priority">
+
+
+<option value="Visok">
+🔴 Visok
+</option>
+
+
+<option value="Srednji" selected>
+🟡 Srednji
+</option>
+
+
+<option value="Nizak">
+🟢 Nizak
+</option>
+
+
+</select>
+
+<!-- NOVA OBAŠTENJA 2.6 -->
+
+
+<label>
+
+🔔 Način obaveštenja
+
+</label>
+
+
+<select id="notificationType">
+
+
+<option value="none">
+
+Bez obaveštenja
+
+</option>
+
+
+<option value="visual">
+
+👁️ Vizuelno
+
+</option>
+
+
+<option value="vibration">
+
+📳 Vibracija
+
+</option>
+
+
+<option value="sound">
+
+🔊 Zvuk
+
+</option>
+
+
+<option value="both">
+
+📳🔊 Vibracija + zvuk
+
+</option>
+
+
+</select>
+
+
+
+
+
+<label>
+
+⏰ Podseti me
+
+</label>
+
+
+<select id="reminderBefore">
+
+
+<option value="0">
+
+U vreme obaveze
+
+</option>
+
+
+<option value="5">
+
+5 minuta ranije
+
+</option>
+
+
+<option value="15">
+
+15 minuta ranije
+
+</option>
+
+
+<option value="60">
+
+1 sat ranije
+
+</option>
+
+
+</select>
+
+
+
+
+
+
+
+<label>
+
+⭐ Nivo važnosti
+
+</label>
+
+
+<select id="importance">
+
+
+<option value="normal">
+
+⚪ Normalno
+
+</option>
+
+
+<option value="important">
+
+🟡 Važno
+
+</option>
+
+
+<option value="urgent">
+
+🔴 Hitno
+
+</option>
+
+
+</select>
+
+
+
+
+
+
+
+<select id="personSelect">
+
+
+<option value="">
+
+👤 Bez osobe
+
+</option>
+
+
+</select>
+
+
+
+
+
+
+
+<button id="addReminder">
+
+
+➕ Dodaj podsetnik
+
+
+</button>
+
+
+
+</section>
+
+
+
+
+
+
+
+<section class="card">
+
+
+<h2>
+
+🔍 Pretraga
+
+</h2>
+
+
+
+
+<input
+
+id="searchInput"
+
+placeholder="Pretraži podsetnike">
+
+
+
+
+
+<select id="filterCategory">
+
+
+<option value="Sve">
+
+Sve
+
+</option>
+
+
+<option value="Aktivno">
+
+Aktivno
+
+</option>
+
+
+<option value="Završeno">
+
+Završeno
+
+</option>
+
+
+<option value="Visok">
+
+Visok prioritet
+
+</option>
+
+
+<option value="Favoriti">
+
+Favoriti
+
+</option>
+
+
+</select>
+
+
+</section>
+
+<section class="card">
+
+
+<h2>
+
+📋 Moji podsetnici
+
+</h2>
+
+
+
+
+
+<div id="emptyState">
+
+Nema podsetnika.
+
+</div>
+
+
+
+
+
+<div id="reminderList">
+
+</div>
+
+
+
+</section>
+
+
+
+
+
+
+
+<section class="card">
+
+
+<h2>
+
+📊 Statistika
+
+</h2>
+
+
+
+
+
+<div class="stats-box">
+
+
+
+<div>
+
+Ukupno
+
+<br>
+
+<span id="totalCount">
+
+0
+
+</span>
+
+
+</div>
+
+
+
+
+<div>
+
+Aktivne
+
+<br>
+
+<span id="activeCountStat">
+
+0
+
+</span>
+
+
+</div>
+
+
+
+
+
+<div>
+
+Završene
+
+<br>
+
+<span id="completedCountStat">
+
+0
+
+</span>
+
+
+</div>
+
+
+
+
+
+<div>
+
+👥 Osobe
+
+<br>
+
+<span id="peopleTotal">
+
+0
+
+</span>
+
+
+</div>
+
+
+
+</div>
+
+
+
+</section>
+
+
+
+
+
+
+
+<section class="card">
+
+
+<h2>
+
+👥 Važne osobe
+
+</h2>
+
+
+
+
+
+<input
+
+id="peopleSearch"
+
+placeholder="Pretraži osobe">
+
+
+
+
+
+<input
+
+id="personName"
+
+placeholder="Ime osobe">
+
+
+
+
+
+<label>
+
+🎂 Rođendan
+
+</label>
+
+
+
+<input
+
+id="personBirthday"
+
+type="date">
+
+
+
+
+
+<label>
+
+📅 Važan datum
+
+</label>
+
+
+
+<input
+
+id="personImportantDate"
+
+type="date">
+
+
+
+
+
+<input
+
+id="personInterest"
+
+placeholder="Interesovanja">
+
+
+
+
+
+<input
+
+id="personGift"
+
+placeholder="Ideja za poklon">
+
+
+
+
+
+<textarea
+
+id="personNote"
+
+placeholder="Beleška o osobi">
+
+</textarea>
+
+
+
+
+
+<button id="addPerson">
+
+➕ Dodaj osobu
+
+</button>
+
+
+
+
+
+<div id="peopleList">
+
+</div>
+
+
+
+</section>
+
+<section class="card">
+
+
+<h2>
+
+📅 Važni datumi
+
+</h2>
+
+
+
+
+<div id="importantDates">
+
+</div>
+
+
+
+</section>
+
+
+
+
+
+
+
+<section class="card">
+
+
+<h2>
+
+💾 Backup podataka
+
+</h2>
+
+
+
+
+<p>
+
+Sačuvajte svoje podsetnike i važne osobe.
+
+</p>
+
+
+
+
+
+<button id="exportData">
+
+⬇️ Izvezi backup
+
+</button>
+
+
+
+
+
+<br><br>
+
+
+
+
+
+<input
+
+type="file"
+
+id="importFile"
+
+accept=".json">
+
+
+
+
+
+<button id="importData">
+
+⬆️ Uvezi backup
+
+</button>
+
+
+
+</section>
+
+
+
+
+
+
+
+<!-- IZMENA PODSETNIKA -->
+
+
+<div id="editModal" class="modal">
+
+
+
+<div class="modal-content">
+
+
+
+<h2>
+
+✏️ Izmena podsetnika
+
+</h2>
+
+
+
+
+
+<input
+
+id="editTitle"
+
+placeholder="Naslov">
+
+
+
+
+
+<textarea
+
+id="editDescription"
+
+placeholder="Opis">
+
+</textarea>
+
+
+
+
+
+<input
+
+id="editDate"
+
+type="date">
+
+
+
+
+
+<input
+
+id="editTime"
+
+type="time">
+
+
+
+
+
+<select id="editCategory">
+
+
+<option value="Posao">
+
+Posao
+
+</option>
+
+
+<option value="Privatno">
+
+Privatno
+
+</option>
+
+
+<option value="Zdravlje">
+
+Zdravlje
+
+</option>
+
+
+<option value="Obaveze">
+
+Obaveze
+
+</option>
+
+
+<option value="Ostalo">
+
+Ostalo
+
+</option>
+
+
+</select>
+
+<select id="editPriority">
+
+
+<option value="Visok">
+
+🔴 Visok
+
+</option>
+
+
+<option value="Srednji">
+
+🟡 Srednji
+
+</option>
+
+
+<option value="Nizak">
+
+🟢 Nizak
+
+</option>
+
+
+</select>
+
+
+
+
+
+<select id="editPerson">
+
+
+<option value="">
+
+Bez osobe
+
+</option>
+
+
+</select>
+
+
+
+
+
+<button id="saveEdit">
+
+💾 Sačuvaj izmene
+
+</button>
+
+
+
+
+
+<button id="cancelEdit">
+
+❌ Otkaži
+
+</button>
+
+
+
+
+
+</div>
+
+</div>
+
+
+
+
+
+
+
+
+<footer>
+
+
+<p>
+
+MemoEgo 2.6 © 2026
+
+</p>
+
+
+</footer>
+
+
+
+
+
+
+
+
+<script src="script.js"></script>
+
+
+
+
+
+
+
+<script>
+
+
+if("serviceWorker" in navigator){
+
+
+window.addEventListener(
+
+"load",
+
+()=>{
+
+
+navigator.serviceWorker
+
+.register("service-worker.js")
+
+.then(()=>{
+
+
+console.log(
+
+"MemoEgo 2.6 Service Worker aktivan."
+
+);
+
+
+})
+
+
+.catch(error=>{
+
+
+console.log(
+
+"Service Worker greška:",
+
+error
+
+);
+
+
+});
+
+
+}
+
+
+);
+
+
+}
+
+
+</script>
+
+
+
+
+
+
+</body>
+
+</html>

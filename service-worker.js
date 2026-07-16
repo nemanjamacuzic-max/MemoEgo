@@ -1,24 +1,34 @@
 /* =====================================================
-   MemoEgo 2.6
+   MemoEgo 2.7 FIX
    service-worker.js
-   PWA keš + notifikacije
+   PWA + NOTIFIKACIJE
 ===================================================== */
 
 "use strict";
 
 
-const CACHE_NAME = "memoego-2.6-notification-v3";
+const CACHE_NAME =
+
+"memoego-2.7-notification-v1";
+
 
 
 const FILES_TO_CACHE = [
 
-    "index.html",
-    "style.css",
-    "script.js",
-    "manifest.json",
 
-    "icons/icon-192.png",
-    "icons/icon-512.png"
+"index.html",
+
+"style.css",
+
+"script.js",
+
+"manifest.json",
+
+
+"icons/icon-192.png",
+
+"icons/icon-512.png"
+
 
 ];
 
@@ -30,31 +40,52 @@ let reminders = [];
 
 
 
+
 /* =========================
    INSTALACIJA
 ========================= */
 
 
 self.addEventListener(
+
 "install",
-event => {
 
-    event.waitUntil(
-
-        caches.open(CACHE_NAME)
-
-        .then(cache => {
-
-            return cache.addAll(FILES_TO_CACHE);
-
-        })
-
-    );
+event=>{
 
 
-    self.skipWaiting();
+event.waitUntil(
 
-});
+
+caches.open(
+
+CACHE_NAME
+
+)
+
+.then(cache=>{
+
+
+return cache.addAll(
+
+FILES_TO_CACHE
+
+);
+
+
+})
+
+
+);
+
+
+
+self.skipWaiting();
+
+
+
+}
+
+);
 
 
 
@@ -68,39 +99,56 @@ event => {
 
 
 self.addEventListener(
+
 "activate",
-event => {
+
+event=>{
 
 
-    event.waitUntil(
-
-        caches.keys()
-
-        .then(keys => {
-
-            return Promise.all(
-
-                keys.map(key => {
-
-                    if(key !== CACHE_NAME){
-
-                        return caches.delete(key);
-
-                    }
-
-                })
-
-            );
-
-        })
-
-    );
+event.waitUntil(
 
 
-    self.clients.claim();
+caches.keys()
+
+.then(keys=>{
 
 
-});
+return Promise.all(
+
+
+keys.map(key=>{
+
+
+if(key!==CACHE_NAME){
+
+
+return caches.delete(key);
+
+
+}
+
+
+
+})
+
+
+);
+
+
+})
+
+
+);
+
+
+
+self.clients.claim();
+
+
+
+}
+
+);
 
 
 
@@ -114,33 +162,47 @@ event => {
 
 
 self.addEventListener(
+
 "message",
-event => {
+
+event=>{
 
 
-    if(event.data && event.data.type === "UPDATE_REMINDERS"){
+if(
+
+event.data &&
+
+event.data.type ===
+
+"UPDATE_REMINDERS"
+
+){
 
 
-        reminders = event.data.reminders || [];
+
+reminders =
+
+event.data.reminders || [];
 
 
-        console.log(
-        "MemoEgo podsetnici:",
-        reminders.length
-        );
 
 
-    }
+
+console.log(
+
+"MemoEgo SW podsetnici:",
+
+reminders.length
+
+);
+
+
+
+}
+
 
 
 });
-
-
-
-
-
-
-
 /* =========================
    PROVERA PODSETNIKA
 ========================= */
@@ -149,82 +211,157 @@ event => {
 function checkReminders(){
 
 
-    const now = new Date();
 
+const now =
 
-    reminders.forEach(item => {
-
-
-        if(item.completed){
-
-            return;
-
-        }
-
-
-        if(!item.date || !item.time){
-
-            return;
-
-        }
+new Date();
 
 
 
-        const reminderTime = new Date(
 
-            item.date +
-            "T" +
-            item.time
 
-        );
+reminders.forEach(item=>{
 
 
 
-        const difference =
+if(item.completed){
 
-        (reminderTime - now) / 60000;
+return;
 
-
-
-        if(
-            difference >= 0 &&
-            difference <= 1
-        ){
+}
 
 
-            self.registration.showNotification(
-
-                "MemoEgo podsetnik",
-
-                {
-
-                    body: item.title,
 
 
-                    icon:
-                    "icons/icon-192.png",
+
+if(!item.date || !item.time){
+
+return;
+
+}
 
 
-                    badge:
-                    "icons/icon-192.png",
 
 
-                    vibrate:
-                    [300,100,300],
 
 
-                    tag:
-                    "memoego-" + item.id
+const reminderTime =
 
-                }
+new Date(
 
-            );
+item.date +
+
+"T" +
+
+item.time
+
+);
 
 
-        }
 
 
-    });
+
+
+const before =
+
+Number(
+
+item.reminderBefore || 0
+
+);
+
+
+
+
+
+
+reminderTime.setMinutes(
+
+reminderTime.getMinutes()
+
+-
+
+before
+
+);
+
+
+
+
+
+
+const difference =
+
+(reminderTime - now) / 60000;
+
+
+
+
+
+
+
+if(
+
+difference >=0 &&
+
+difference <=1
+
+){
+
+
+
+
+
+self.registration.showNotification(
+
+"MemoEgo podsetnik",
+
+{
+
+
+body:
+
+item.title,
+
+
+
+icon:
+
+"icons/icon-192.png",
+
+
+
+badge:
+
+"icons/icon-192.png",
+
+
+
+vibrate:
+
+[300,100,300],
+
+
+
+tag:
+
+"memoego-"+item.id
+
+
+
+}
+
+);
+
+
+
+
+}
+
+
+
+});
+
 
 
 }
@@ -240,24 +377,96 @@ function checkReminders(){
 ========================= */
 
 
-setInterval(
+/*
+Napomena:
+Service Worker ne garantuje
+stalni interval u pozadini.
 
-    () => {
+Ovaj interval radi dok je SW aktivan.
+Glavna sigurnost dolazi iz
+event-based buđenja sistema.
+*/
 
-        checkReminders();
 
-    },
 
-    60000
+setInterval(()=>{
+
+
+checkReminders();
+
+
+
+},60000);
+
+
+
+
+
+
+
+
+/* =========================
+   PUSH PRIPREMA
+========================= */
+
+
+self.addEventListener(
+
+"push",
+
+event=>{
+
+
+
+const data =
+
+event.data
+
+?
+
+event.data.text()
+
+:
+
+"Nova obaveza";
+
+
+
+
+
+
+event.waitUntil(
+
+
+
+self.registration.showNotification(
+
+"MemoEgo",
+
+{
+
+
+body:data,
+
+
+icon:
+
+"icons/icon-192.png"
+
+
+
+}
+
+
+)
+
+
 
 );
 
 
 
-
-
-
-
+});
 /* =========================
    KLIK NA OBAVEŠTENJE
 ========================= */
@@ -267,46 +476,61 @@ self.addEventListener(
 
 "notificationclick",
 
-event => {
+event=>{
 
 
-    event.notification.close();
-
-
-
-    event.waitUntil(
-
-
-        clients.matchAll({
-
-            type:"window"
-
-        })
-
-        .then(clientList => {
-
-
-            if(clientList.length > 0){
-
-                return clientList[0].focus();
-
-            }
+event.notification.close();
 
 
 
-            return clients.openWindow(
-
-                "index.html"
-
-            );
 
 
-        })
-
-    );
+event.waitUntil(
 
 
-});
+clients.matchAll({
+
+type:"window",
+
+includeUncontrolled:true
+
+})
+
+
+.then(clientList=>{
+
+
+
+if(clientList.length>0){
+
+
+return clientList[0].focus();
+
+
+
+}
+
+
+
+return clients.openWindow(
+
+"index.html"
+
+);
+
+
+
+})
+
+
+);
+
+
+
+}
+
+);
+
 
 
 
@@ -315,7 +539,7 @@ event => {
 
 
 /* =========================
-   UČITAVANJE
+   OFFLINE PODRŠKA
 ========================= */
 
 
@@ -323,20 +547,47 @@ self.addEventListener(
 
 "fetch",
 
-event => {
+event=>{
 
 
-    event.respondWith(
 
-        fetch(event.request)
-
-        .catch(() => {
-
-            return caches.match(event.request);
-
-        })
-
-    );
+event.respondWith(
 
 
-});
+
+fetch(event.request)
+
+.catch(()=>{
+
+
+return caches.match(
+
+event.request
+
+);
+
+
+
+})
+
+
+
+);
+
+
+
+}
+
+);
+
+
+
+
+
+
+
+console.log(
+
+"MemoEgo 2.7 Service Worker aktivan"
+
+);

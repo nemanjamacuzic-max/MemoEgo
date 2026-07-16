@@ -1,12 +1,12 @@
 /* =====================================================
-   MemoEgo 2.6 FIX
+   MemoEgo 2.7 FIX
    script.js
    Deo 1/8
 ===================================================== */
 
 "use strict";
 
-console.log("MemoEgo 2.6 FIX učitan");
+console.log("MemoEgo 2.7 FIX učitan");
 
 
 
@@ -69,6 +69,26 @@ document.getElementById("filterCategory");
 
 
 /* =========================
+   NOVO 2.7 OBAŠTENJA
+========================= */
+
+
+const enableNotifications =
+document.getElementById(
+"enableNotifications"
+);
+
+
+const notificationStatus =
+document.getElementById(
+"notificationStatus"
+);
+
+
+
+
+
+/* =========================
    MOJ DAN
 ========================= */
 
@@ -110,11 +130,11 @@ document.getElementById("completedCount");
 
 
 const REMINDER_KEY =
-"memoego_26_reminders";
+"memoego_27_reminders";
 
 
 const PEOPLE_KEY =
-"memoego_26_people";
+"memoego_27_people";
 
 
 
@@ -123,6 +143,12 @@ let reminders = [];
 let people = [];
 
 let editingReminderId = null;
+
+
+
+/* sprečava ponavljanje notifikacija */
+
+let sentNotifications = [];
 
 
 
@@ -140,9 +166,9 @@ return Date.now();
 }
 
 
-
-
-
+console.log(
+"MemoEgo 2.7 Deo 1/8 spreman"
+);
 /* =========================
    SAVE
 ========================= */
@@ -151,8 +177,11 @@ return Date.now();
 function saveReminders(){
 
 localStorage.setItem(
+
 REMINDER_KEY,
+
 JSON.stringify(reminders)
+
 );
 
 }
@@ -162,11 +191,16 @@ JSON.stringify(reminders)
 function savePeople(){
 
 localStorage.setItem(
+
 PEOPLE_KEY,
+
 JSON.stringify(people)
+
 );
 
 }
+
+
 
 
 
@@ -184,29 +218,50 @@ try{
 
 
 const savedReminders =
-localStorage.getItem(REMINDER_KEY);
+localStorage.getItem(
+REMINDER_KEY
+);
+
 
 
 const savedPeople =
-localStorage.getItem(PEOPLE_KEY);
+localStorage.getItem(
+PEOPLE_KEY
+);
+
+
 
 
 
 reminders =
+
 savedReminders
+
 ?
+
 JSON.parse(savedReminders)
+
 :
+
 [];
+
+
+
 
 
 
 people =
+
 savedPeople
+
 ?
+
 JSON.parse(savedPeople)
+
 :
+
 [];
+
 
 
 
@@ -217,9 +272,13 @@ catch(error){
 
 
 console.error(
+
 "Greška učitavanja:",
+
 error
+
 );
+
 
 
 reminders=[];
@@ -228,6 +287,7 @@ people=[];
 
 
 }
+
 
 
 
@@ -286,6 +346,209 @@ item.importance="normal";
 
 
 
+
+
+
+/* =========================
+   NOVI 2.7 SISTEM DOZVOLE
+========================= */
+
+
+
+function updateNotificationStatus(){
+
+
+if(!notificationStatus){
+
+return;
+
+}
+
+
+
+if(!("Notification" in window)){
+
+
+notificationStatus.textContent =
+
+"❌ Ovaj uređaj ne podržava obaveštenja.";
+
+
+return;
+
+
+}
+
+
+
+
+
+if(Notification.permission==="granted"){
+
+
+notificationStatus.textContent =
+
+"🟢 Obaveštenja su aktivna.";
+
+
+}
+
+
+
+else if(Notification.permission==="denied"){
+
+
+notificationStatus.textContent =
+
+"🔴 Obaveštenja su blokirana u podešavanjima telefona.";
+
+
+}
+
+
+
+else{
+
+
+notificationStatus.textContent =
+
+"🟡 Obaveštenja nisu uključena.";
+
+
+}
+
+
+
+}
+
+
+
+
+
+
+
+function requestNotificationPermission(){
+
+
+if(!("Notification" in window)){
+
+
+return;
+
+
+}
+
+
+
+
+
+Notification.requestPermission()
+
+.then(permission=>{
+
+
+updateNotificationStatus();
+
+
+
+if(permission==="granted"){
+
+
+showTestNotification();
+
+
+}
+
+
+
+});
+
+
+}
+
+
+
+
+
+
+
+
+function showTestNotification(){
+
+
+
+if(Notification.permission!=="granted"){
+
+return;
+
+}
+
+
+
+
+
+new Notification(
+
+"MemoEgo aktivan",
+
+{
+
+body:
+
+"Obaveštenja su uspešno uključena. Vaš asistent je spreman.",
+
+
+icon:
+
+"icons/icon-192.png"
+
+}
+
+);
+
+
+
+}
+
+
+
+
+
+
+
+if(enableNotifications){
+
+
+enableNotifications.addEventListener(
+
+"click",
+
+()=>{
+
+
+requestNotificationPermission();
+
+
+
+}
+
+
+);
+
+
+}
+
+
+
+
+
+
+
+console.log(
+
+"MemoEgo 2.7 Deo 2/8 spreman"
+
+);
 /* =========================
    DODAJ PODSETNIK
 ========================= */
@@ -304,7 +567,9 @@ return;
 
 
 const title =
+
 titleInput.value.trim();
+
 
 
 
@@ -313,7 +578,9 @@ if(!title){
 
 
 alert(
+
 "Unesite naslov podsetnika."
+
 );
 
 
@@ -324,63 +591,124 @@ return;
 
 
 
-const reminder={
 
 
-id:generateId(),
+
+const reminder = {
 
 
-title:title,
+id:
+
+generateId(),
+
+
+
+title:
+
+
+
+title,
+
 
 
 description:
+
+
+
 descriptionInput.value.trim(),
 
 
+
 date:
+
+
+
 dateInput.value,
 
 
+
 time:
+
+
+
 timeInput.value,
 
 
+
 category:
+
+
+
 categoryInput.value,
 
 
+
 priority:
+
+
+
 priorityInput.value,
 
 
+
 notificationType:
+
+
+
 notificationType.value,
 
 
+
 reminderBefore:
+
+
+
 reminderBefore.value,
 
 
+
 importance:
+
+
+
 importance.value,
 
 
+
 person:
+
+
+
 personSelect.value,
 
 
-favorite:false,
+
+favorite:
 
 
-completed:false,
+
+false,
+
+
+
+completed:
+
+
+
+false,
+
 
 
 created:
+
+
+
 new Date().toISOString()
 
 
 
 };
+
 
 
 
@@ -405,6 +733,10 @@ updateAll();
 
 
 
+sendRemindersToServiceWorker();
+
+
+
 }
 
 
@@ -422,8 +754,11 @@ if(addReminderButton){
 
 
 addReminderButton.addEventListener(
+
 "click",
+
 addReminder
+
 );
 
 
@@ -443,41 +778,80 @@ addReminder
 function clearReminderForm(){
 
 
+
+if(titleInput)
+
 titleInput.value="";
 
+
+
+if(descriptionInput)
 
 descriptionInput.value="";
 
 
+
+if(dateInput)
+
 dateInput.value="";
 
+
+
+if(timeInput)
 
 timeInput.value="";
 
 
+
+if(categoryInput)
+
 categoryInput.value="Posao";
 
+
+
+if(priorityInput)
 
 priorityInput.value="Srednji";
 
 
+
+if(notificationType)
+
 notificationType.value="none";
 
+
+
+if(reminderBefore)
 
 reminderBefore.value="0";
 
 
+
+if(importance)
+
 importance.value="normal";
 
 
+
+if(personSelect)
+
 personSelect.value="";
+
 
 
 }
 
 
 
-console.log("MemoEgo 2.6 Deo 1/8 spreman");
+
+
+
+
+console.log(
+
+"MemoEgo 2.7 Deo 3/8 spreman"
+
+);
 /* =========================
    PRIKAZ PODSETNIKA
 ========================= */
@@ -525,15 +899,18 @@ emptyState.style.display="none";
 
 
 
+
 list.forEach(item=>{
 
 
 const card =
+
 document.createElement("div");
 
 
 
 card.className =
+
 "reminder-card";
 
 
@@ -554,11 +931,13 @@ notificationIcon="👁️";
 break;
 
 
+
 case "vibration":
 
 notificationIcon="📳";
 
 break;
+
 
 
 case "sound":
@@ -568,6 +947,7 @@ notificationIcon="🔊";
 break;
 
 
+
 case "both":
 
 notificationIcon="📳🔊";
@@ -575,34 +955,43 @@ notificationIcon="📳🔊";
 break;
 
 
+
 default:
 
-notificationIcon="";
+notificationIcon="🔕";
+
 
 }
 
 
 
 
-let importanceText =
-"⚪ Normalno";
+
+
+
+let importanceText="⚪ Normalno";
 
 
 
 if(item.importance==="important"){
 
-importanceText =
-"🟡 Važno";
+
+importanceText="🟡 Važno";
+
 
 }
+
 
 
 if(item.importance==="urgent"){
 
-importanceText =
-"🔴 Hitno";
+
+importanceText="🔴 Hitno";
+
 
 }
+
+
 
 
 
@@ -611,45 +1000,64 @@ card.innerHTML = `
 
 
 <h3>
+
 ${item.title}
+
 </h3>
 
 
 
 <p>
+
 ${item.description || "Bez opisa"}
+
 </p>
 
 
 
 <p>
+
 📅 ${item.date || "Bez datuma"}
+
 ${item.time ? " • "+item.time : ""}
+
 </p>
 
 
 
 <p>
+
 🏷️ ${item.category || "Ostalo"}
+
 </p>
 
 
 
 <p>
-⭐ Prioritet: ${item.priority || "Srednji"}
+
+⭐ Prioritet:
+
+${item.priority || "Srednji"}
+
 </p>
 
 
 
 <p>
+
 ${notificationIcon}
 
 ${
 item.reminderBefore==="0"
+
 ?
+
 "U vreme obaveze"
+
 :
+
 item.reminderBefore+" minuta ranije"
+
 }
 
 </p>
@@ -657,18 +1065,26 @@ item.reminderBefore+" minuta ranije"
 
 
 <p>
+
 ${importanceText}
+
 </p>
 
 
 
 ${
 item.person
+
 ?
+
 "<p>👤 "+item.person+"</p>"
+
 :
+
 ""
+
 }
+
 
 
 
@@ -676,10 +1092,15 @@ item.person
 
 ${
 item.completed
+
 ?
+
 "✅ Završeno"
+
 :
+
 "⏳ Aktivno"
+
 }
 
 </p>
@@ -695,13 +1116,19 @@ data-id="${item.id}">
 
 ${
 item.completed
+
 ?
+
 "↩️ Vrati"
+
 :
+
 "✅ Završi"
+
 }
 
 </button>
+
 
 
 
@@ -751,6 +1178,9 @@ reminderList.appendChild(card);
 
 
 
+
+
+
 /* =========================
    AKCIJE NA LISTI
 ========================= */
@@ -767,6 +1197,7 @@ event=>{
 
 
 const id =
+
 Number(event.target.dataset.id);
 
 
@@ -776,6 +1207,8 @@ if(!id){
 return;
 
 }
+
+
 
 
 
@@ -790,6 +1223,8 @@ toggleComplete(id);
 
 
 
+
+
 if(event.target.classList.contains("delete-btn")){
 
 
@@ -797,6 +1232,8 @@ deleteReminder(id);
 
 
 }
+
+
 
 
 
@@ -810,8 +1247,8 @@ openEditModal(id);
 
 
 
-}
 
+}
 
 );
 
@@ -823,7 +1260,11 @@ openEditModal(id);
 
 
 
+console.log(
 
+"MemoEgo 2.7 Deo 4/8 spreman"
+
+);
 /* =========================
    ZAVRŠI PODSETNIK
 ========================= */
@@ -834,9 +1275,14 @@ function toggleComplete(id){
 
 
 const reminder =
+
 reminders.find(
+
 item=>item.id===id
+
 );
+
+
 
 
 
@@ -848,18 +1294,29 @@ return;
 
 
 
+
+
 reminder.completed =
+
 !reminder.completed;
+
+
 
 
 
 saveReminders();
 
 
+
 renderReminders();
 
 
+
 updateAll();
+
+
+
+sendRemindersToServiceWorker();
 
 
 
@@ -881,7 +1338,9 @@ function deleteReminder(id){
 
 
 if(!confirm(
+
 "Obrisati podsetnik?"
+
 )){
 
 
@@ -892,6 +1351,9 @@ return;
 
 
 
+
+
+
 reminders =
 
 reminders.filter(
@@ -899,6 +1361,7 @@ reminders.filter(
 item=>item.id!==id
 
 );
+
 
 
 
@@ -915,13 +1378,19 @@ updateAll();
 
 
 
+sendRemindersToServiceWorker();
+
+
+
 }
 
 
 
 
 
-console.log("MemoEgo 2.6 Deo 2/8 spreman");
+
+
+
 /* =========================
    PRETRAGA I FILTERI
 ========================= */
@@ -929,10 +1398,15 @@ console.log("MemoEgo 2.6 Deo 2/8 spreman");
 
 if(searchInput){
 
+
 searchInput.addEventListener(
+
 "input",
+
 applyFilters
+
 );
+
 
 }
 
@@ -940,10 +1414,15 @@ applyFilters
 
 if(filterCategory){
 
+
 filterCategory.addEventListener(
+
 "change",
+
 applyFilters
+
 );
+
 
 }
 
@@ -951,7 +1430,10 @@ applyFilters
 
 
 
+
+
 function applyFilters(){
+
 
 
 if(!searchInput || !filterCategory){
@@ -962,15 +1444,26 @@ return;
 
 
 
+
+
+
 const text =
+
 searchInput.value
+
 .toLowerCase()
+
 .trim();
 
 
 
+
+
 const filter =
+
 filterCategory.value;
+
+
 
 
 
@@ -981,15 +1474,25 @@ const result =
 reminders.filter(item=>{
 
 
+
+
+
 const title =
+
 (item.title || "")
+
 .toLowerCase();
+
+
 
 
 
 const description =
+
 (item.description || "")
+
 .toLowerCase();
+
 
 
 
@@ -1006,7 +1509,11 @@ description.includes(text);
 
 
 
+
 let filterOK=true;
+
+
+
 
 
 
@@ -1016,44 +1523,62 @@ switch(filter){
 
 case "Aktivno":
 
+
 filterOK =
+
 !item.completed;
 
+
 break;
+
 
 
 
 
 case "Završeno":
 
+
 filterOK =
+
 item.completed;
 
+
 break;
+
 
 
 
 
 case "Visok":
 
+
 filterOK =
+
 item.priority==="Visok";
 
+
 break;
+
 
 
 
 
 case "Favoriti":
 
+
 filterOK =
+
 item.favorite===true;
+
 
 break;
 
 
 
 }
+
+
+
 
 
 
@@ -1081,293 +1606,11 @@ renderReminders(result);
 
 
 
-/* =========================
-   IZMENA PODSETNIKA
-========================= */
+console.log(
 
-
-const editModal =
-document.getElementById("editModal");
-
-
-
-const editTitle =
-document.getElementById("editTitle");
-
-
-
-const editDescription =
-document.getElementById("editDescription");
-
-
-
-const editDate =
-document.getElementById("editDate");
-
-
-
-const editTime =
-document.getElementById("editTime");
-
-
-
-const editCategory =
-document.getElementById("editCategory");
-
-
-
-const editPriority =
-document.getElementById("editPriority");
-
-
-
-const editPerson =
-document.getElementById("editPerson");
-
-
-
-const saveEdit =
-document.getElementById("saveEdit");
-
-
-
-const cancelEdit =
-document.getElementById("cancelEdit");
-
-
-
-
-
-
-
-function openEditModal(id){
-
-
-
-const reminder =
-
-reminders.find(
-
-item=>item.id===id
+"MemoEgo 2.7 Deo 5/8 spreman"
 
 );
-
-
-
-
-if(!reminder){
-
-return;
-
-}
-
-
-
-
-
-editingReminderId=id;
-
-
-
-if(editTitle)
-
-editTitle.value =
-reminder.title || "";
-
-
-
-if(editDescription)
-
-editDescription.value =
-reminder.description || "";
-
-
-
-if(editDate)
-
-editDate.value =
-reminder.date || "";
-
-
-
-if(editTime)
-
-editTime.value =
-reminder.time || "";
-
-
-
-if(editCategory)
-
-editCategory.value =
-reminder.category || "Posao";
-
-
-
-if(editPriority)
-
-editPriority.value =
-reminder.priority || "Srednji";
-
-
-
-if(editPerson)
-
-editPerson.value =
-reminder.person || "";
-
-
-
-
-
-if(editModal){
-
-editModal.style.display="block";
-
-}
-
-
-
-}
-
-
-
-
-
-
-
-if(saveEdit){
-
-
-saveEdit.addEventListener(
-
-"click",
-
-()=>{
-
-
-const reminder =
-
-reminders.find(
-
-item=>item.id===editingReminderId
-
-);
-
-
-
-if(!reminder){
-
-return;
-
-}
-
-
-
-
-
-reminder.title =
-editTitle.value.trim();
-
-
-
-reminder.description =
-editDescription.value.trim();
-
-
-
-reminder.date =
-editDate.value;
-
-
-
-reminder.time =
-editTime.value;
-
-
-
-reminder.category =
-editCategory.value;
-
-
-
-reminder.priority =
-editPriority.value;
-
-
-
-reminder.person =
-editPerson.value;
-
-
-
-
-
-saveReminders();
-
-
-
-if(editModal){
-
-editModal.style.display="none";
-
-}
-
-
-
-renderReminders();
-
-
-
-updateAll();
-
-
-
-}
-
-
-);
-
-
-}
-
-
-
-
-
-
-
-if(cancelEdit){
-
-
-cancelEdit.addEventListener(
-
-"click",
-
-()=>{
-
-
-if(editModal){
-
-editModal.style.display="none";
-
-}
-
-
-}
-
-
-);
-
-
-}
-
-
-
-
-
-
-console.log("MemoEgo 2.6 Deo 3/8 spreman");
 /* =========================
    VAŽNE OSOBE
 ========================= */
@@ -1405,6 +1648,10 @@ const peopleList =
 document.getElementById("peopleList");
 
 
+
+
+
+
 const peopleTotal =
 document.getElementById("peopleTotal");
 
@@ -1427,7 +1674,9 @@ return;
 
 
 
+
 const name =
+
 personName.value.trim();
 
 
@@ -1438,13 +1687,19 @@ if(!name){
 
 
 alert(
+
 "Unesite ime osobe."
+
 );
 
 
 return;
 
+
 }
+
+
+
 
 
 
@@ -1452,30 +1707,58 @@ return;
 const person = {
 
 
-id:generateId(),
+id:
+
+generateId(),
 
 
-name:name,
+
+name:
+
+
+
+name,
+
 
 
 birthday:
+
+
+
 personBirthday.value,
 
 
+
 importantDate:
+
+
+
 personImportantDate.value,
 
 
+
 interest:
+
+
+
 personInterest.value.trim(),
 
 
+
 gift:
+
+
+
 personGift.value.trim(),
 
 
+
 note:
+
+
+
 personNote.value.trim()
+
 
 
 };
@@ -1517,41 +1800,49 @@ updateAll();
 
 
 
+
 function clearPersonForm(){
 
 
 
 if(personName)
+
 personName.value="";
 
 
 
 if(personBirthday)
+
 personBirthday.value="";
 
 
 
 if(personImportantDate)
+
 personImportantDate.value="";
 
 
 
 if(personInterest)
+
 personInterest.value="";
 
 
 
 if(personGift)
+
 personGift.value="";
 
 
 
 if(personNote)
+
 personNote.value="";
 
 
 
 }
+
 
 
 
@@ -1591,6 +1882,9 @@ return;
 
 
 
+
+
+
 peopleList.innerHTML="";
 
 
@@ -1600,14 +1894,18 @@ peopleList.innerHTML="";
 if(people.length===0){
 
 
+
 peopleList.innerHTML=
 
 "<p>Nema dodatih osoba.</p>";
 
 
+
 return;
 
+
 }
+
 
 
 
@@ -1618,12 +1916,18 @@ people.forEach(person=>{
 
 
 const div =
+
 document.createElement("div");
 
 
 
-div.className =
+
+
+div.className=
+
 "person-card";
+
+
 
 
 
@@ -1632,39 +1936,50 @@ div.innerHTML = `
 
 
 <h3>
+
 👤 ${person.name}
+
 </h3>
 
 
 
 <p>
+
 🎂 ${person.birthday || "Nema rođendana"}
+
 </p>
 
 
 
 <p>
+
 📅 ${person.importantDate || "Nema važnog datuma"}
+
 </p>
 
 
 
 <p>
+
 ❤️ ${person.interest || ""}
+
 </p>
 
 
 
 <p>
+
 🎁 ${person.gift || ""}
+
 </p>
 
 
 
 <p>
-${person.note || ""}
-</p>
 
+${person.note || ""}
+
+</p>
 
 
 
@@ -1679,8 +1994,8 @@ data-id="${person.id}">
 </button>
 
 
-
 `;
+
 
 
 
@@ -1699,6 +2014,19 @@ peopleList.appendChild(div);
 
 
 
+
+
+
+console.log(
+
+"MemoEgo 2.7 Deo 6/8 spreman"
+
+);
+/* =========================
+   BRISANJE OSOBA
+========================= */
+
+
 if(peopleList){
 
 
@@ -1709,12 +2037,26 @@ peopleList.addEventListener(
 event=>{
 
 
+if(
 
-if(event.target.classList.contains("delete-person")){
+event.target.classList.contains(
+
+"delete-person"
+
+)
+
+){
+
 
 
 const id =
-Number(event.target.dataset.id);
+
+Number(
+
+event.target.dataset.id
+
+);
+
 
 
 
@@ -1726,6 +2068,7 @@ people.filter(
 person=>person.id!==id
 
 );
+
 
 
 
@@ -1763,7 +2106,7 @@ updateAll();
 
 
 
-console.log("MemoEgo 2.6 Deo 4/8 spreman");
+
 /* =========================
    OSOBE U PODSETNIKU
 ========================= */
@@ -1778,6 +2121,7 @@ if(!personSelect){
 return;
 
 }
+
 
 
 
@@ -1800,16 +2144,19 @@ people.forEach(person=>{
 
 
 const option =
+
 document.createElement("option");
 
 
 
 option.value =
+
 person.name;
 
 
 
 option.textContent =
+
 "👤 " + person.name;
 
 
@@ -1836,7 +2183,13 @@ personSelect.appendChild(option);
 
 
 const importantDates =
-document.getElementById("importantDates");
+
+document.getElementById(
+
+"importantDates"
+
+);
+
 
 
 
@@ -1852,6 +2205,7 @@ if(!importantDates){
 return;
 
 }
+
 
 
 
@@ -1873,17 +2227,18 @@ people.forEach(person=>{
 if(person.birthday){
 
 
+
 dates.push({
 
 date:person.birthday,
 
-text:
-"🎂 "+person.name+" - rođendan"
+text:"🎂 "+person.name+" - rođendan"
 
 });
 
 
 }
+
 
 
 
@@ -1892,12 +2247,12 @@ text:
 if(person.importantDate){
 
 
+
 dates.push({
 
 date:person.importantDate,
 
-text:
-"📅 "+person.name+" - važan datum"
+text:"📅 "+person.name+" - važan datum"
 
 });
 
@@ -1907,6 +2262,7 @@ text:
 
 
 });
+
 
 
 
@@ -1917,12 +2273,14 @@ text:
 if(dates.length===0){
 
 
-importantDates.innerHTML =
+importantDates.innerHTML=
 
 "<p>Nema važnih datuma.</p>";
 
 
+
 return;
+
 
 }
 
@@ -1942,11 +2300,11 @@ new Date(a.date)-new Date(b.date)
 
 
 
-
 dates.forEach(item=>{
 
 
 const p =
+
 document.createElement("p");
 
 
@@ -1978,505 +2336,6 @@ importantDates.appendChild(p);
 
 
 
-/* =========================
-   PRETRAGA OSOBA
-========================= */
-
-
-const peopleSearch =
-document.getElementById("peopleSearch");
-
-
-
-
-
-if(peopleSearch){
-
-
-peopleSearch.addEventListener(
-
-"input",
-
-()=>{
-
-
-const value =
-
-peopleSearch.value
-
-.toLowerCase()
-
-.trim();
-
-
-
-
-
-const cards =
-
-document.querySelectorAll(
-
-".person-card"
-
-);
-
-
-
-
-
-cards.forEach(card=>{
-
-
-const text =
-
-card.innerText
-
-.toLowerCase();
-
-
-
-
-
-if(text.includes(value)){
-
-
-card.style.display="block";
-
-
-}
-
-else{
-
-
-card.style.display="none";
-
-
-}
-
-
-
-});
-
-
-
-}
-
-
-);
-
-
-}
-
-
-
-
-
-
-console.log("MemoEgo 2.6 Deo 5/8 spreman");
-/* =====================================================
-   MemoEgo 2.6 FIX
-   Deo 6/8
-   SISTEM OBAVEŠTENJA
-===================================================== */
-
-
-/* =========================
-   CENTAR OBAVEŠTENJA
-========================= */
-
-
-const notificationCenter =
-document.getElementById("notificationCenter");
-
-
-
-
-
-/* =========================
-   PROVERA PODSETNIKA
-========================= */
-
-
-function checkImportantNotifications(){
-
-
-const now = new Date();
-
-
-
-
-const upcoming = reminders.filter(item=>{
-
-
-if(item.completed){
-
-return false;
-
-}
-
-
-
-if(!item.date || !item.time){
-
-return false;
-
-}
-
-
-
-
-const reminderTime = new Date(
-
-item.date + "T" + item.time
-
-);
-
-
-
-
-
-const before = Number(
-
-item.reminderBefore || 0
-
-);
-
-
-
-
-
-reminderTime.setMinutes(
-
-reminderTime.getMinutes() - before
-
-);
-
-
-
-
-
-const difference =
-
-(reminderTime - now) / 60000;
-
-
-
-
-
-return difference >= 0 && difference <= 60;
-
-
-
-});
-
-
-
-
-
-
-if(!notificationCenter){
-
-return;
-
-}
-
-
-
-
-
-notificationCenter.innerHTML="";
-
-
-
-
-
-if(upcoming.length===0){
-
-
-notificationCenter.innerHTML=
-
-"<p>🔕 Nema novih obaveštenja.</p>";
-
-
-return;
-
-
-}
-
-
-
-
-
-
-
-upcoming.forEach(item=>{
-
-
-
-const p =
-document.createElement("p");
-
-
-
-let icon="🔔";
-
-
-
-if(item.notificationType==="visual"){
-
-icon="👁️";
-
-}
-
-
-
-if(item.notificationType==="vibration"){
-
-icon="📳";
-
-}
-
-
-
-if(item.notificationType==="sound"){
-
-icon="🔊";
-
-}
-
-
-
-if(item.notificationType==="both"){
-
-icon="📳🔊";
-
-}
-
-
-
-
-
-p.textContent =
-
-icon + " " + item.title;
-
-
-
-notificationCenter.appendChild(p);
-
-
-
-
-
-/* =========================
-   VIBRACIJA
-========================= */
-
-
-if(
-
-(item.notificationType==="vibration" ||
-
-item.notificationType==="both")
-
-&&
-
-navigator.vibrate
-
-){
-
-
-navigator.vibrate(500);
-
-
-}
-
-
-
-
-
-
-
-/* =========================
-   ZVUK
-========================= */
-
-
-if(
-
-item.notificationType==="sound" ||
-
-item.notificationType==="both"
-
-){
-
-
-playNotificationSound();
-
-
-}
-
-
-
-
-
-/* =========================
-   SISTEMSKA NOTIFIKACIJA
-========================= */
-
-
-if(
-
-"Notification" in window
-
-&&
-
-Notification.permission==="granted"
-
-){
-
-
-
-new Notification(
-
-"MemoEgo podsetnik",
-
-{
-
-body:item.title
-
-}
-
-);
-
-
-
-}
-
-
-
-});
-
-
-
-}
-
-
-
-
-
-
-
-/* =========================
-   ZVUK OBAVEŠTENJA
-========================= */
-
-
-function playNotificationSound(){
-
-
-try{
-
-
-const audio = new Audio(
-
-"notification.mp3"
-
-);
-
-
-audio.play();
-
-
-
-}
-
-catch(error){
-
-
-console.log(
-
-"Zvuk nije dostupan."
-
-);
-
-
-}
-
-
-
-}
-
-
-
-
-
-
-
-/* =========================
-   DOZVOLA ZA NOTIFIKACIJE
-========================= */
-
-
-function requestNotificationPermission(){
-
-
-
-if(
-
-"Notification" in window
-
-){
-
-
-
-Notification.requestPermission();
-
-
-
-}
-
-
-
-}
-
-
-
-
-
-
-
-/* =========================
-   AUTOMATSKA PROVERA
-========================= */
-
-
-setInterval(()=>{
-
-
-checkImportantNotifications();
-
-
-
-},60000);
-
-
-
-
-
-
-console.log(
-
-"MemoEgo 2.6 Deo 6/8 spreman"
-
-);
-/* =====================================================
-   MemoEgo 2.6 FIX
-   Deo 7/8
-   STATISTIKA + MOJ DAN + BACKUP
-===================================================== */
-
-
 
 /* =========================
    STATISTIKA
@@ -2484,15 +2343,31 @@ console.log(
 
 
 const totalCount =
-document.getElementById("totalCount");
+
+document.getElementById(
+
+"totalCount"
+
+);
 
 
 const activeCountStat =
-document.getElementById("activeCountStat");
+
+document.getElementById(
+
+"activeCountStat"
+
+);
 
 
 const completedCountStat =
-document.getElementById("completedCountStat");
+
+document.getElementById(
+
+"completedCountStat"
+
+);
+
 
 
 
@@ -2502,9 +2377,11 @@ document.getElementById("completedCountStat");
 function updateStats(){
 
 
+
 const total =
 
 reminders.length;
+
 
 
 
@@ -2520,6 +2397,7 @@ item=>item.completed
 
 
 
+
 const active =
 
 total - completed;
@@ -2529,41 +2407,33 @@ total - completed;
 
 
 
-if(totalCount){
+if(totalCount)
 
-totalCount.textContent = total;
-
-}
+totalCount.textContent=total;
 
 
 
-if(activeCountStat){
+if(activeCountStat)
 
-activeCountStat.textContent = active;
-
-}
+activeCountStat.textContent=active;
 
 
 
-if(completedCountStat){
+if(completedCountStat)
 
-completedCountStat.textContent = completed;
-
-}
+completedCountStat.textContent=completed;
 
 
 
-if(peopleTotal){
+if(peopleTotal)
 
-peopleTotal.textContent = people.length;
+peopleTotal.textContent=
 
-}
+people.length;
 
 
 
 }
-
-
 
 
 
@@ -2608,26 +2478,21 @@ item.date===today
 
 
 
-if(todayCount){
 
+if(todayCount)
 
-todayCount.textContent =
+todayCount.textContent=
 
 todayReminders.length;
 
 
-}
 
 
 
 
+if(activeCount)
 
-
-
-if(activeCount){
-
-
-activeCount.textContent =
+activeCount.textContent=
 
 reminders.filter(
 
@@ -2636,28 +2501,19 @@ item=>!item.completed
 ).length;
 
 
-}
 
 
 
 
+if(completedCount)
 
-
-
-if(completedCount){
-
-
-completedCount.textContent =
+completedCount.textContent=
 
 reminders.filter(
 
 item=>item.completed
 
 ).length;
-
-
-}
-
 
 
 
@@ -2669,8 +2525,6 @@ if(todayPreview){
 
 
 todayPreview.innerHTML="";
-
-
 
 
 
@@ -2692,16 +2546,15 @@ todayPreview.innerHTML=
 todayReminders.forEach(item=>{
 
 
-
 const p =
 
 document.createElement("p");
 
 
 
-p.textContent =
+p.textContent=
 
-"⏰ " + item.title;
+"⏰ "+item.title;
 
 
 
@@ -2717,124 +2570,17 @@ todayPreview.appendChild(p);
 
 
 
-
-
 }
 
 
 
 
 
+console.log(
 
-
-
-
-/* =========================
-   POZDRAV ASISTENTA
-========================= */
-
-
-function updateGreeting(){
-
-
-
-if(!greeting){
-
-return;
-
-}
-
-
-
-const hour =
-
-new Date()
-
-.getHours();
-
-
-
-
-
-if(hour < 12){
-
-
-greeting.textContent=
-
-"Dobro jutro 👋";
-
-
-}
-
-else if(hour < 18){
-
-
-greeting.textContent=
-
-"Dobar dan 👋";
-
-
-}
-
-else{
-
-
-greeting.textContent=
-
-"Dobro veče 👋";
-
-
-}
-
-
-
-
-
-
-if(currentDate){
-
-
-
-currentDate.textContent =
-
-new Date()
-
-.toLocaleDateString(
-
-"sr-RS"
+"MemoEgo 2.7 Deo 7/8 spreman"
 
 );
-
-
-
-}
-
-
-
-
-
-
-if(assistantMessage){
-
-
-assistantMessage.textContent=
-
-"Vaš digitalni asistent je spreman.";
-
-}
-
-
-
-}
-
-
-
-
-
-
-
-
-
 /* =========================
    BACKUP IZVOZ
 ========================= */
@@ -2842,22 +2588,25 @@ assistantMessage.textContent=
 
 const exportDataButton =
 
-document.getElementById("exportData");
+document.getElementById(
+"exportData"
+);
 
 
 
 const importFile =
 
-document.getElementById("importFile");
+document.getElementById(
+"importFile"
+);
 
 
 
 const importDataButton =
 
-document.getElementById("importData");
-
-
-
+document.getElementById(
+"importData"
+);
 
 
 
@@ -2873,21 +2622,27 @@ exportDataButton.addEventListener(
 ()=>{
 
 
-
 const backup = {
 
 
-version:"MemoEgo 2.6 FIX",
+version:
+
+"MemoEgo 2.7 FIX",
 
 
-date:new Date().toISOString(),
+date:
+
+new Date().toISOString(),
 
 
-reminders:reminders,
+reminders:
+
+reminders,
 
 
-people:people
+people:
 
+people
 
 
 };
@@ -2896,9 +2651,9 @@ people:people
 
 
 
+const blob =
 
-
-const blob = new Blob(
+new Blob(
 
 [
 
@@ -2926,15 +2681,9 @@ type:"application/json"
 
 
 
-
-
 const url =
 
 URL.createObjectURL(blob);
-
-
-
-
 
 
 
@@ -2954,18 +2703,11 @@ link.download=
 
 
 
-
-
 link.click();
 
 
 
-
-
-
 URL.revokeObjectURL(url);
-
-
 
 
 
@@ -2975,6 +2717,7 @@ URL.revokeObjectURL(url);
 
 
 }
+
 
 
 
@@ -3014,9 +2757,7 @@ alert(
 return;
 
 
-
 }
-
 
 
 
@@ -3026,8 +2767,6 @@ return;
 const reader =
 
 new FileReader();
-
-
 
 
 
@@ -3053,12 +2792,9 @@ e.target.result
 
 
 
-
-
 reminders =
 
 data.reminders || [];
-
 
 
 
@@ -3072,16 +2808,11 @@ data.people || [];
 
 
 
-
-
 saveReminders();
 
 
 
 savePeople();
-
-
-
 
 
 
@@ -3101,6 +2832,7 @@ updateAll();
 
 
 
+sendRemindersToServiceWorker();
 
 
 
@@ -3112,12 +2844,9 @@ alert(
 
 
 
-
-
 }
 
 catch(error){
-
 
 
 alert(
@@ -3127,13 +2856,11 @@ alert(
 );
 
 
-
 }
 
 
 
 };
-
 
 
 
@@ -3147,7 +2874,6 @@ importFile.files[0]
 
 
 
-
 }
 
 );
@@ -3159,67 +2885,41 @@ importFile.files[0]
 
 
 
-
-console.log(
-
-"MemoEgo 2.6 Deo 7/8 spreman"
-
-);/* =====================================================
-   MemoEgo 2.6 FIX
-   Deo 8/8
-   ZAVRŠNA INICIJALIZACIJA
-===================================================== */
 
 
 
 /* =========================
-   TAMNA TEMA
+   OBAVEŠTENJA
 ========================= */
 
 
-const darkModeToggle =
-
-document.getElementById("darkModeToggle");
+function checkImportantNotifications(){
 
 
 
+const now =
 
-
-if(darkModeToggle){
-
-
-darkModeToggle.addEventListener(
-
-"change",
-
-()=>{
-
-
-document.body.classList.toggle(
-
-"dark",
-
-darkModeToggle.checked
-
-);
+new Date();
 
 
 
 
-localStorage.setItem(
 
-"memoego_dark",
-
-darkModeToggle.checked
-
-);
+reminders.forEach(item=>{
 
 
+
+if(item.completed){
+
+return;
 
 }
 
-);
 
+
+if(!item.date || !item.time){
+
+return;
 
 }
 
@@ -3228,18 +2928,57 @@ darkModeToggle.checked
 
 
 
+const reminderTime =
 
-function loadTheme(){
+new Date(
 
+item.date+
 
+"T"+
 
-const dark =
-
-localStorage.getItem(
-
-"memoego_dark"
+item.time
 
 );
+
+
+
+
+
+
+const before =
+
+Number(
+
+item.reminderBefore || 0
+
+);
+
+
+
+
+
+
+reminderTime.setMinutes(
+
+reminderTime.getMinutes()
+
+-
+
+before
+
+);
+
+
+
+
+
+
+
+const difference =
+
+(reminderTime-now)/60000;
+
+
 
 
 
@@ -3247,31 +2986,29 @@ localStorage.getItem(
 
 if(
 
-dark==="true"
+difference >=0 &&
+
+difference <=1
 
 ){
 
 
 
-document.body.classList.add(
+const alreadySent =
 
-"dark"
+sentNotifications.includes(
+
+item.id
 
 );
 
 
 
-if(darkModeToggle){
-
-darkModeToggle.checked=true;
-
-}
 
 
+if(alreadySent){
 
-}
-
-
+return;
 
 }
 
@@ -3279,38 +3016,74 @@ darkModeToggle.checked=true;
 
 
 
+sentNotifications.push(
 
+item.id
 
-/* =========================
-   OSVEŽAVANJE SVIH FUNKCIJA
-========================= */
-
-
-function updateAll(){
+);
 
 
 
-updateStats();
 
 
 
-updateMyDay();
+if(
+
+Notification.permission==="granted"
+
+){
 
 
 
-updateGreeting();
+new Notification(
+
+"MemoEgo podsetnik",
+
+{
+
+body:item.title,
+
+icon:
+
+"icons/icon-192.png"
+
+}
+
+);
 
 
 
-renderImportantDates();
+}
 
+
+
+
+
+}
+
+
+
+});
+
+
+
+}
+
+
+
+
+
+
+
+setInterval(()=>{
 
 
 checkImportantNotifications();
 
 
 
-}
+},60000);
+
 
 
 
@@ -3319,7 +3092,72 @@ checkImportantNotifications();
 
 
 /* =========================
-   POKRETANJE APLIKACIJE
+   SERVICE WORKER
+========================= */
+
+
+function sendRemindersToServiceWorker(){
+
+
+
+if(
+
+"serviceWorker" in navigator
+
+){
+
+
+
+navigator.serviceWorker.ready.then(
+
+registration=>{
+
+
+if(registration.active){
+
+
+
+registration.active.postMessage({
+
+type:
+
+"UPDATE_REMINDERS",
+
+
+reminders:
+
+reminders
+
+
+});
+
+
+
+}
+
+
+
+}
+
+);
+
+
+
+}
+
+
+
+}
+
+
+
+
+
+
+
+
+/* =========================
+   POKRETANJE
 ========================= */
 
 
@@ -3335,7 +3173,7 @@ loadData();
 
 
 
-loadTheme();
+updateNotificationStatus();
 
 
 
@@ -3356,69 +3194,18 @@ updatePersonSelect();
 
 
 updateAll();
+
+
+
 sendRemindersToServiceWorker();
 
 
 
-
-requestNotificationPermission();
-/* =========================
-   SLANJE PODSETNIKA
-   SERVICE WORKERU
-========================= */
-
-
-function sendRemindersToServiceWorker(){
-
-
-if(
-"serviceWorker" in navigator
-){
-
-
-navigator.serviceWorker.ready.then(
-registration=>{
-
-
-registration.active.postMessage({
-
-type:"UPDATE_REMINDERS",
-
-reminders:reminders
-
-});
-
-
-});
-
-
-}
-
-
-}
-
-
-
-
 console.log(
 
-"✅ MemoEgo 2.6 FIX potpuno aktivan"
+"✅ MemoEgo 2.7 FIX potpuno aktivan"
 
 );
-
-
-
-navigator.serviceWorker.ready.then(()=>{
-
-
-console.log(
-
-"SERVICE WORKER AKTIVAN"
-
-);
-
-
-});
 
 
 

@@ -7,13 +7,14 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>MemoEgo 2.6</title>
+<title>MemoEgo 2.7</title>
 
 <meta name="theme-color" content="#2563eb">
 
 <link rel="stylesheet" href="style.css">
 
 <link rel="manifest" href="./manifest.json">
+
 <link rel="icon" type="image/png" href="icons/icon-192.png">
 
 </head>
@@ -114,6 +115,52 @@ Pripremam vaš dan...
 
 
 
+<!-- NOVO 2.7 SISTEM OBAVEŠTENJA -->
+
+
+<section class="card" id="notificationPermissionCard">
+
+
+<h2>
+
+🔔 Obaveštenja
+
+</h2>
+
+
+
+<p id="notificationStatus">
+
+Provera statusa obaveštenja...
+
+</p>
+
+
+
+<p>
+
+MemoEgo koristi obaveštenja da vas na vreme podseti na važne obaveze.
+
+</p>
+
+
+
+<button id="enableNotifications">
+
+🔔 Omogući obaveštenja
+
+</button>
+
+
+
+</section>
+
+
+
+
+
+
+
 <section class="card">
 
 
@@ -161,11 +208,6 @@ type="date">
 id="time"
 
 type="time">
-
-
-
-
-
 <select id="category">
 
 
@@ -220,7 +262,8 @@ Ostalo
 
 </select>
 
-<!-- NOVA OBAŠTENJA 2.6 -->
+
+
 
 
 <label>
@@ -460,6 +503,12 @@ Favoriti
 
 </section>
 
+
+
+
+
+
+
 <section class="card">
 
 
@@ -511,7 +560,6 @@ Nema podsetnika.
 
 
 <div class="stats-box">
-
 
 
 <div>
@@ -592,13 +640,6 @@ Završene
 
 
 </section>
-
-
-
-
-
-
-
 <section class="card">
 
 
@@ -717,6 +758,10 @@ placeholder="Beleška o osobi">
 
 
 </section>
+
+
+
+
 
 <section class="card">
 
@@ -913,6 +958,10 @@ Ostalo
 
 </select>
 
+
+
+
+
 <select id="editPriority">
 
 
@@ -995,7 +1044,7 @@ Bez osobe
 
 <p>
 
-MemoEgo 2.6 © 2026
+MemoEgo 2.7 © 2026
 
 </p>
 
@@ -1039,7 +1088,7 @@ navigator.serviceWorker
 
 console.log(
 
-"MemoEgo 2.6 Service Worker aktivan."
+"MemoEgo 2.7 Service Worker aktivan."
 
 );
 

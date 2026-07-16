@@ -2986,9 +2986,9 @@ const difference =
 
 if(
 
-difference >=0 &&
+difference >=-1 &&
 
-difference <=1
+difference <=5
 
 ){
 
@@ -3082,7 +3082,7 @@ checkImportantNotifications();
 
 
 
-},60000);
+},10000);
 
 
 
